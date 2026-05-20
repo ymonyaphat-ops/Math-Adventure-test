@@ -334,6 +334,13 @@ button.choice:hover {
   width:100%;
   height:100%;
   z-index:1;
+  pointer-events:none;
+}
+
+#playerMap,
+.monster,
+#mobileControls{
+  pointer-events:auto;
 }
 
 #playerMap{
@@ -394,11 +401,16 @@ button.choice:hover {
 }
 
 #mobileControls{
-  position:absolute;
-  bottom:20px;
+  position:fixed;
+  bottom:10px;
   left:50%;
   transform:translateX(-50%);
-  z-index:2;
+
+  z-index:10;
+
+  display:none;
+  flex-direction:column;
+  gap:5px;
 }
 
 #mobileControls .row{
@@ -428,7 +440,21 @@ body {
 }
 
 #mobileControls{
+  position:fixed;
+  bottom:10px;
+  left:50%;
+  transform:translateX(-50%);
+
+  z-index:10;
+
   display:none;
+  flex-direction:column;
+  gap:5px;
+}
+
+/* 📱 แสดงเฉพาะมือถือ และเฉพาะหน้า map */
+.mobile-mode #mobileControls{
+  display:flex;
 }
 
 .coin{
@@ -438,6 +464,36 @@ body {
 @keyframes floatCoin{
   from{ transform: translateY(0px); }
   to{ transform: translateY(-10px); }
+}
+
+@media(max-width:768px){
+
+  #player{
+    width:110px;
+  }
+
+  #enemy{
+    width:70px;
+  }
+
+ #uiBox{
+  padding:15px;
+  padding-bottom:140px;
+}
+
+  #question{
+    font-size:20px;
+  }
+
+  button.choice{
+    font-size:16px;
+    padding:12px;
+  }
+
+  #mobileControls{
+    display:flex;
+  }
+
 }
 
 </style>
@@ -576,7 +632,7 @@ let selectedChar = "wizard.png";
 
 function goToCharacter(){
   
-  bgm.play();
+  bgm.play().catch(() => {});
   
   document.getElementById("startScreen").style.display="none";
   document.getElementById("characterScreen").style.display="block";
@@ -614,6 +670,10 @@ function closeWelcome(){
 }
 
 function startGame(lv){
+
+  if(window.innerWidth <= 768){
+    document.getElementById("mobileControls").style.display = "flex";
+  }
 
    bgm.pause();
    bgm.currentTime = 0;
@@ -1055,6 +1115,8 @@ monsters.forEach(monster => {
  
 function enterBattle(){
 
+  document.getElementById("mobileControls").style.display = "none";
+
   // ❌ ซ่อนแผนที่
   document.getElementById("mapArea").style.display = "none";
 
@@ -1134,14 +1196,54 @@ function restartGame(){
 }
 
 function move(dir){
-  if(dir === "right") playerX += 20;
-  if(dir === "left") playerX -= 20;
-  if(dir === "up") playerY -= 20;
-  if(dir === "down") playerY += 20;
+
+  if(dir === "right"){
+    playerX += 20;
+  }
+
+  if(dir === "left"){
+    playerX -= 20;
+  }
+
+  if(dir === "up"){
+    playerY -= 20;
+  }
+
+  if(dir === "down"){
+    playerY += 20;
+  }
 
   let player = document.getElementById("playerMap");
+
   player.style.left = playerX + "px";
   player.style.top = playerY + "px";
+
+  // ✅ ตรวจชนมอนสเตอร์
+  let monsters = document.querySelectorAll(".monster");
+
+  monsters.forEach(monster => {
+
+    let pRect = player.getBoundingClientRect();
+    let mRect = monster.getBoundingClientRect();
+
+    if(
+      pRect.left < mRect.right &&
+      pRect.right > mRect.left &&
+      pRect.top < mRect.bottom &&
+      pRect.bottom > mRect.top
+    ){
+      enterBattle();
+
+      monster.style.display = "none";
+    }
+
+  });
+
+}
+
+// 📱 ตรวจมือถือ
+if(window.innerWidth <= 768){
+  document.body.classList.add("mobile-mode");
 }
 
 </script>
