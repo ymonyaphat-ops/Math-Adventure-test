@@ -401,13 +401,13 @@ button.choice:hover {
 
 #mobileControls{
   position:fixed;
-  bottom:10px;
+  bottom:20px;
   left:50%;
   transform:translateX(-50%);
 
-  z-index:9999;
+  z-index:99999;
 
-  display:flex;
+  display:none;
   flex-direction:column;
   gap:5px;
 }
@@ -657,6 +657,9 @@ function closeWelcome(){
 
 function startGame(lv){
 
+   // 📱 แสดงปุ่มมือถือ
+  document.getElementById("mobileControls").style.display = "flex";
+  
   if(window.innerWidth <= 768){
     document.getElementById("mobileControls").style.display = "flex";
   }
@@ -678,6 +681,8 @@ function startGame(lv){
 
   document.getElementById("uiBox").style.display = "none";
   document.getElementById("mapArea").style.display = "block";
+  
+  document.getElementById("mobileControls").style.display = "flex";
 
   document.getElementById("player").src = selectedChar;
   document.getElementById("playerMap").src = selectedChar;
@@ -1177,10 +1182,6 @@ if(window.innerWidth <= 768){
   document.body.classList.add("mobile-mode");
 }
 
-// 📱 ถ้าเป็นมือถือให้แสดงปุ่มบังคับ
-if(window.innerWidth <= 768){
-  document.getElementById("mobileControls").style.display = "flex";
-}
 
 </script>
 
