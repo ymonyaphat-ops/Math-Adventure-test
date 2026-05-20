@@ -1,0 +1,1150 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Math Adventure</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+.screen{
+  width:100vw;
+  height:100vh;
+  max-width:none;
+
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+
+  text-align:center;
+  color:white;
+  padding:20px;
+
+  background-size: cover;
+  background-position: center;
+}
+.centerBox{
+  background: rgba(0,0,0,0.7);
+  padding:20px;
+  border-radius:20px;
+  box-shadow: 0 0 20px rgba(0,0,0,0.8);
+
+  max-width:420px;
+  width:100%;
+}
+#uiBox{
+  position: relative;
+
+  width:100%;
+  max-width:420px;
+
+  margin:auto;
+
+  background: rgba(0,0,0,0.5);  /* ⭐ เข้มขึ้น */
+  padding:20px;
+  border-radius:20px;
+
+  text-align:center;
+  color:white;
+
+  /* ⭐ เพิ่มเงา */
+  box-shadow: 0 0 20px rgba(0,0,0,0.8);
+  z-index:2;
+}
+.centerBox{
+  width:100%;
+  max-width:420px;
+
+  margin:auto;
+
+  background: rgba(0,0,0,0.7);
+  padding:20px;
+  border-radius:20px;
+
+  text-align:center;
+  color:white;
+
+  box-shadow: 0 0 20px rgba(0,0,0,0.8);
+}
+#welcomeBox{
+  position:fixed;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+
+  background: rgba(0,0,0,0.7);
+
+  display:flex;
+  justify-content:center;
+  align-items:center;
+
+  z-index:999;
+
+  display:none; /* ⭐ ซ่อนไว้ก่อน */
+}
+
+#welcomeBox div{
+  background:white;
+  color:black;
+  padding:30px;
+  border-radius:20px;
+  text-align:center;
+  font-size:22px;
+}
+
+#welcomeBox button{
+  margin-top:15px;
+  padding:10px 20px;
+  border:none;
+  border-radius:10px;
+  background:orange;
+  color:white;
+  font-size:18px;
+  cursor:pointer;
+}
+
+.screen button{
+  padding:10px 20px;
+  margin:10px;
+  font-size:18px;
+  border:none;
+  border-radius:10px;
+  background:orange;
+  color:white;
+  cursor:pointer;
+}
+.screen button:hover{
+  transform:scale(1.1);
+  background:#ff9f43;
+}
+body {
+  margin:0;
+  font-family: 'Segoe UI';
+  background: black;
+}
+#battle {
+  display:flex;
+  justify-content:space-around; /* ⭐ จาก between → around */
+  align-items:center;
+  margin:10px 0;
+}
+
+#player {
+  width:150px;   /* ⭐ ตัวละครใหญ่กว่า */
+  transition:0.2s;
+  filter: drop-shadow(0 0 10px black); /* ⭐ เพิ่ม */
+}
+
+#enemy {
+  width:80px;    /* มอนขนาดเดิม */
+  transition:0.2s;
+  filter: drop-shadow(0 0 10px black); /* ⭐ เพิ่ม */
+}
+
+/* 📦 กล่องเกม */
+#gameBox {
+  width:100vw;
+  height:100vh;
+
+  background: url('bg.jpg') no-repeat center;
+  background-size: cover;
+
+  display:flex;
+  justify-content:center;
+  align-items:center;
+
+  padding:20px;
+  box-sizing:border-box;
+
+  /* ⭐ เพิ่ม 2 ตัวนี้ */
+  position: relative;
+}
+
+#gameBox::before{
+  content:"";
+  position:absolute;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  background: rgba(0,0,0,0.6); /* ⭐ ทำให้ฉากมืดลง */
+  z-index:0;
+}
+/* 🎯 หัวเกม */
+#title {
+  font-size:26px;
+  margin-bottom:10px;
+}
+
+/* 💰 แถบบน */
+#topUI {
+  display:flex;
+  justify-content:space-between;
+  margin-bottom:10px;
+}
+
+/* ❤️ HP */
+#hpBar {
+  height:15px;
+  background:#ddd;
+  border-radius:10px;
+  margin:10px 0;
+}
+
+#hpFill {
+  height:100%;
+  background:limegreen;
+  width:100%;
+  border-radius:10px;
+}
+
+/* ❤️ เลือดศัตรู */
+#enemyHPBar {
+  height:10px;
+  background:#ddd;
+  border-radius:10px;
+  margin-top:5px;
+  width:80px;
+}
+#enemyHPFill {
+  height:100%;
+  background:red;
+  width:100%;
+  border-radius:10px;
+}
+
+/* ❓ คำถาม */
+#question {
+  font-size:24px;
+  margin:15px 0;
+}
+
+/* 🔘 ปุ่ม */
+button.choice {
+  display:block;
+  width:100%;
+  margin:6px 0;
+  padding:10px;
+  border:none;
+  border-radius:10px;
+  background:#6c5ce7;
+  color:white;
+  font-size:18px;
+  cursor:pointer;
+  transition:0.2s;
+}
+
+button.choice:hover {
+  transform:scale(1.05);
+  background:#4834d4;
+}
+
+/* 📊 ผลลัพธ์ */
+#result {
+  margin-top:10px;
+  font-weight:bold;
+}
+
+/* ➡️ ปุ่มด่าน */
+#nextBtn {
+  margin-top:10px;
+  padding:8px 15px;
+  border:none;
+  border-radius:10px;
+  background:orange;
+  color:white;
+  cursor:pointer;
+}
+#enemyBox {
+  display:flex;
+  flex-direction:column;
+  align-items:center;   /* ⭐ ทำให้ทุกอย่างอยู่กลาง */
+}
+#characterScreen img{
+  width:130px;
+  height:130px;
+  object-fit:contain;
+  background: rgba(255,255,255,0.6); /* ⭐ ขาวโปร่ง */
+  padding:10px;
+
+  cursor:pointer;
+  margin:10px;
+  border-radius:15px;
+  transition:0.2s;
+}
+#playerName{
+  width:80%;
+  max-width:300px;
+
+  padding:12px;
+  font-size:18px;
+
+  border-radius:10px;
+  border:none;
+
+  outline:none;
+  text-align:center;
+
+  background: rgba(255,255,255,0.9);
+}
+#playerName:focus{
+  box-shadow:0 0 10px #74b9ff;
+}
+
+#characterScreen img:hover{
+  transform:scale(1.1);
+}
+
+#characterScreen img.selected{
+  transform:scale(1.2);   /* ⭐ เพิ่มความเด่น */
+  border:3px solid yellow;
+  box-shadow:0 0 20px yellow;
+}
+
+@keyframes pulse{
+  from{ transform:scale(1.3); }
+  to{ transform:scale(1.5); }
+}
+/* 🌲 หน้าเริ่ม */
+#startScreen{
+  background: url('bg1.jpg') no-repeat center;
+  background-size: cover;
+}
+
+/* 🧙‍♂️ หน้าเลือกตัวละคร */
+#characterScreen{
+  background: url('bg2.jpg') no-repeat center;
+  background-size: cover;
+
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+}
+
+/* 🗺️ หน้าแผนที่ */
+#mapScreen{
+  background: url('bg2.jpg') no-repeat center;
+  background-size: cover;
+}
+
+#mapArea{
+  position:absolute;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  z-index:1;
+}
+
+#playerMap{
+  position:absolute;
+  width:160px;
+
+  top:300px;
+  left:100px;
+
+  transition:0.1s;
+  
+  filter: drop-shadow(0 0 10px black); /* เพิ่มเงา */
+}
+#playerMap{
+  position:absolute;
+  width:160px;  /* 🔥 ใหญ่ขึ้นจาก 80 */
+
+  filter: drop-shadow(0 0 10px cyan); /* 🔥 เรืองฟ้า */
+
+  top:300px;
+  left:100px;
+
+  transition:0.1s;
+}
+
+#playerMap:hover{
+  transform: scale(1.1);
+}
+#monsterMap{
+  position:absolute;
+  width:80px;
+
+  top:200px;
+  left:400px;
+}
+.monster{
+  position:absolute;
+
+  width:120px;   /* 🔥 ใหญ่ขึ้น */
+
+  filter: drop-shadow(0 0 15px red); /* 🔥 เรืองแดง */
+
+  transition:0.2s;
+}
+
+#coins img{
+  margin-right:5px;
+}
+
+@keyframes coinPop {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.6); }
+  100% { transform: scale(1); }
+}
+
+.coin-animate img{
+  animation: coinPop 0.3s ease;
+}
+
+#mobileControls{
+  position:absolute;
+  bottom:20px;
+  left:50%;
+  transform:translateX(-50%);
+  z-index:2;
+}
+
+#mobileControls .row{
+  display:flex;
+  justify-content:center;
+}
+
+#mobileControls button{
+  width:60px;
+  height:60px;
+  margin:5px;
+  font-size:24px;
+  border:none;
+  border-radius:12px;
+  background:#0984e3;
+  color:white;
+}
+
+#mobileControls button:active{
+  transform: scale(0.9);
+  background:#74b9ff;
+}
+
+body {
+  touch-action: none;
+  overflow: hidden;
+}
+
+#mobileControls{
+  display:none;
+}
+
+.coin{
+  animation: floatCoin 1s infinite alternate;
+}
+
+@keyframes floatCoin{
+  from{ transform: translateY(0px); }
+  to{ transform: translateY(-10px); }
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div id="startScreen" class="screen">
+  <div class="centerBox">
+
+    <h1>🌲 Math Adventure 🌲</h1>
+    <p>ฝึกบวก ลบ คูณ หาร ทศนิยมให้เก่ง!</p>
+    <p>ตอบคำถามให้ถูกเพื่อเอาชนะมอนสเตอร์ 💥</p>
+
+    <button onclick="goToCharacter()">▶️ Start</button>
+
+  </div>
+</div>
+
+<div id="characterScreen" class="screen" style="display:none;">
+  <h2>เลือกตัวละคร</h2>
+
+  <img src="wizard.png" onclick="selectChar(event, 'wizard.png')">
+  <img src="knight.png" onclick="selectChar(event, 'knight.png')">
+  <img src="archer.png" onclick="selectChar(event, 'archer.png')">
+
+  <br><br>
+
+  <input id="playerName" placeholder="ใส่ชื่อผู้เล่น">
+
+  <br><br>
+  <button onclick="goToMap()">Next</button>
+</div>
+
+<div id="mapScreen" class="screen" style="display:none;">
+  <h2>🗺️ เลือกด่าน</h2>
+
+  <button onclick="startGame(1)">ด่าน 1</button>
+  <button onclick="startGame(2)">ด่าน 2 🔒</button>
+  <button onclick="startGame(3)">ด่าน 3 🔒</button>
+  <button onclick="startGame(4)">ด่าน 4 🔒</button>
+  <button onclick="startGame(5)">ด่าน 5 🔒</button>
+</div>
+
+<div id="welcomeBox">
+  <div id="welcomeText"></div>
+  <button onclick="closeWelcome()">เริ่มเกม</button>
+</div>
+
+<div id="gameBox" style="display:none;">
+
+  <div id="uiBox">  <!-- ⭐ เพิ่มอันนี้ -->
+
+    <div id="title">🧙‍♂️ Math Adventure</div>
+
+    <div id="topUI">
+      <div id="level"></div>
+      <div id="coins">
+  <img src="coin.png" style="width:20px; vertical-align:middle;">
+  <span id="coinText">0</span>
+</div>
+    </div>
+
+    <div id="hpBar"><div id="hpFill"></div></div>
+
+    <div id="battle">
+      <img id="player" src="wizard.png">
+
+      <div id="enemyBox">
+        <img id="enemy" src="monster1.png">
+        <div id="enemyHPBar">
+          <div id="enemyHPFill"></div>
+        </div>
+      </div>
+    </div>
+
+    <div id="question"></div>
+    <div id="choices"></div>
+    <div id="result"></div>
+
+    <button id="nextBtn" onclick="nextLevel()">➡️ ด่านถัดไป</button>
+
+  </div> <!-- ⭐ ปิด uiBox -->
+
+<div id="summaryBox" style="
+  position:fixed;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  background: rgba(0,0,0,0.8);
+  display:none;
+  justify-content:center;
+  align-items:center;
+  z-index:999;
+">
+  <div style="
+    background:white;
+    color:black;
+    padding:30px;
+    border-radius:20px;
+    text-align:center;
+  ">
+    <h2>📊 สรุปผล</h2>
+    <p id="summaryText"></p>
+    <button onclick="goNextLevel()">➡️ ไปด่านถัดไป</button>
+	<button onclick="restartGame()">🔄 เริ่มใหม่</button>
+  </div>
+</div>
+    
+<div id="mapArea">
+  <img id="playerMap" src="wizard.png">
+  <img id="monsterMap" class="monster" src="monster1.png" style="position:absolute;">
+</div>
+
+<div id="mobileControls">
+  <div class="row">
+    <button onclick="move('up')">⬆️</button>
+  </div>
+  <div class="row">
+    <button onclick="move('left')">⬅️</button>
+    <button onclick="move('down')">⬇️</button>
+    <button onclick="move('right')">➡️</button>
+  </div>
+</div>
+
+</div>
+
+
+<script>
+let playerX = 100;
+let playerY = 300;
+
+let selectedChar = "wizard.png";
+
+function goToCharacter(){
+  
+  bgm.play();
+  
+  document.getElementById("startScreen").style.display="none";
+  document.getElementById("characterScreen").style.display="block";
+}
+
+function selectChar(e, img){   // ⭐ เพิ่ม e เข้ามา
+  selectedChar = img;
+
+  let chars = document.querySelectorAll("#characterScreen img");
+  chars.forEach(c => c.classList.remove("selected"));
+
+  e.target.classList.add("selected"); // ⭐ เปลี่ยน event → e
+  document.getElementById("playerMap").src = img;
+}
+
+function goToMap(){
+  let name = document.getElementById("playerName").value;
+  if(name==""){
+    alert("กรุณาใส่ชื่อก่อน!");
+    return;
+  }
+  document.getElementById("welcomeText").innerText = 
+  "ยินดีต้อนรับ " + name + " 🎉";
+
+  document.getElementById("welcomeBox").style.display = "flex";  
+}
+
+function closeWelcome(){
+  document.getElementById("welcomeBox").style.display = "none";
+
+  // ✅ ค่อยซ่อนตอนนี้
+  document.getElementById("characterScreen").style.display="none";
+
+  document.getElementById("mapScreen").style.display="block";
+}
+
+function startGame(lv){
+
+   bgm.pause();
+   bgm.currentTime = 0;
+
+  if(lv > unlocked){
+    alert("🔒 ต้องผ่านด่านก่อน!");
+    return;
+  }
+
+  level = lv;
+  
+  updateMapMonster(); // ⭐ ใส่ตรงนี้
+  
+  document.getElementById("mapScreen").style.display="none";
+  document.getElementById("gameBox").style.display="block";
+
+  document.getElementById("uiBox").style.display = "none";
+  document.getElementById("mapArea").style.display = "block";
+
+  document.getElementById("player").src = selectedChar;
+  document.getElementById("playerMap").src = selectedChar;
+
+  // ⭐ ใส่ตรงนี้เลย
+  playerX = 100;
+  playerY = 300;
+
+  let player = document.getElementById("playerMap");
+  player.style.left = playerX + "px";
+  player.style.top = playerY + "px";
+}
+let enemyHP = 100;
+let level = 1;
+let unlocked = 1;
+let hp = 100;
+let coins = 0;
+
+let correctCount = 0;
+let totalCount = 0;
+
+let correctAnswer;
+
+const bgm = new Audio("bgm.mp3");
+bgm.loop = true;
+bgm.volume = 0.5;
+
+const walkSound = new Audio("walk.mp3");
+walkSound.volume = 0.3;
+
+const correctSound = new Audio("win.mp3");
+correctSound.preload = "auto";
+correctSound.volume = 1;
+
+const wrongSound = new Audio("wrong.mp3");
+wrongSound.preload = "auto";
+wrongSound.volume = 1;
+
+let levelText = document.getElementById("level");
+let coinsText = document.getElementById("coins");
+let hpFill = document.getElementById("hpFill");
+let questionText = document.getElementById("question");
+let resultText = document.getElementById("result");
+const enemies = [
+  "monster1.png",
+  "monster2.png",
+  "monster3.png",
+  "monster4.png",
+  "monster5.png"
+];
+
+function updateEnemyHP(){
+  document.getElementById("enemyHPFill").style.width = enemyHP + "%";
+}
+function changeEnemy(){
+  let enemy = document.getElementById("enemy");
+  enemy.src = enemies[level-1];
+  enemy.style.display = "block"; // ⭐ สำคัญมาก
+}
+function updateMapMonster(){
+  let monster = document.getElementById("monsterMap");
+  monster.src = enemies[level-1];
+
+  monster.style.left = (200 + Math.random()*400) + "px";
+  monster.style.top = (100 + Math.random()*300) + "px";
+
+  monster.style.display = "block";
+}
+function randDecimal(){
+  return (Math.random()*10).toFixed(Math.floor(Math.random()*3)+1);
+}
+
+function updateUI(){
+  levelText.innerText = "📍 ด่าน: " + level;
+  document.getElementById("coinText").innerText = coins;
+  hpFill.style.width = hp + "%";
+}
+
+function newQ(){
+  let a = parseFloat(randDecimal());
+  let b = parseFloat(randDecimal());
+
+  let ops;
+
+  if(level==1) ops=["+","-"];
+  if(level==2) ops=["+","-"];
+  if(level==3) ops=["*"];
+  if(level==4) ops=["/"];
+  if(level==5) ops=["+","-","*","/"];
+
+  let op = ops[Math.floor(Math.random()*ops.length)];
+  if(op == "/" && b == 0){
+  b = 1;
+}
+  
+  if(op == "-" && a < b){
+    let temp = a;
+    a = b;
+    b = temp;
+}
+
+  switch(op){
+    case "+": correctAnswer = (+a + +b).toFixed(3); break;
+    case "-": correctAnswer = (+a - +b).toFixed(3); break;
+    case "*": correctAnswer = (+a * +b).toFixed(3); break;
+    case "/": correctAnswer = (+a / b).toFixed(3); break;
+  }
+
+  questionText.innerText = `${a} ${op} ${b} = ?`;
+
+  generateChoices();
+}
+
+function generateChoices(){
+  let arr=[correctAnswer];
+
+  while(arr.length<4){
+    let fake=(parseFloat(correctAnswer)+(Math.random()*2-1)).toFixed(3);
+    if(!arr.includes(fake)) arr.push(fake);
+  }
+
+  arr.sort(()=>Math.random()-0.5);
+
+  let html="";
+  arr.forEach(c=>{
+    html += `<button class="choice" onclick="check('${c}')">${c}</button>`;
+  });
+
+  document.getElementById("choices").innerHTML=html;
+}
+
+function check(choice){
+  totalCount++;
+
+  let player = document.getElementById("player");
+  let enemy = document.getElementById("enemy");
+
+  if(choice==correctAnswer){
+    correctCount++;
+    coins+=10;
+
+    // ✨ เด้งเหรียญ
+   let coinBox = document.getElementById("coins");
+   coinBox.classList.add("coin-animate");
+
+setTimeout(()=>{
+  coinBox.classList.remove("coin-animate");
+},300);
+    enemyHP -= 10;
+    if(enemyHP < 0) enemyHP = 0;
+
+    resultText.innerText="✅ ถูก!";
+	
+	correctSound.pause();
+    correctSound.currentTime = 0;
+
+    correctSound.play().catch(err=>{
+      console.log("sound error", err);
+});
+	
+	// 💥 สุ่มใช้สกิลพิเศษ
+if(Math.random() < 0.3){
+  enemyHP -= 20;
+
+  resultText.innerText += " 💥 Critical Hit!";
+
+  let enemy = document.getElementById("enemy");
+  enemy.style.transform = "scale(1.5)";
+  setTimeout(()=>{
+    enemy.style.transform = "scale(1)";
+  },200);
+}
+
+    // ⚔️ player attack
+	player.style.transform = "translateX(" + (30 + level*5) + "px)";
+    setTimeout(()=>{
+      player.style.transform = "translateX(0)";
+      enemy.style.filter = "brightness(0.5)";
+      setTimeout(()=>enemy.style.filter="none",200);
+    },200);
+
+    // 💥 screen shake
+    document.getElementById("uiBox").style.transform = "scale(1.05)";
+    setTimeout(()=>{
+      document.getElementById("uiBox").style.transform = "scale(1)";
+    },100);
+
+  } else {
+
+    hp-=20;
+    resultText.innerText="❌ "+correctAnswer;
+
+    wrongSound.pause();
+    wrongSound.currentTime = 0;
+
+    wrongSound.play().catch(err=>{
+      console.log("sound error", err);
+    });
+
+
+    // 💥 enemy attack
+    enemy.style.transform = "translateX(-50px)";
+    setTimeout(()=>{
+      enemy.style.transform = "translateX(0)";
+      player.style.filter = "brightness(0.5)";
+      setTimeout(()=>player.style.filter="none",200);
+    },200);
+
+    // 💢 screen shake
+    document.getElementById("uiBox").style.transform = "translateX(-5px)";
+    setTimeout(()=>{
+      document.getElementById("uiBox").style.transform = "translateX(5px)";
+      setTimeout(()=>{
+        document.getElementById("uiBox").style.transform = "translateX(0)";
+      },50);
+    },50);
+  }
+
+  updateUI();
+  updateEnemyHP();
+
+  if(hp<=0){
+    alert("💀 แพ้!");
+    resetGame();
+    return;
+  }
+
+  if(totalCount>=10){
+    endLevel();
+    return;
+  }
+
+  newQ();
+}
+
+function endLevel(){
+  let score = correctCount / totalCount;
+
+  // แสดงผลสรุป
+  let percent = Math.floor(score * 100);
+
+document.getElementById("summaryText").innerHTML =
+  `🎯 ถูก ${correctCount}/${totalCount}<br>⭐ คะแนน ${percent}%`;
+
+  document.getElementById("summaryBox").style.display = "flex";
+  let nextBtn = document.querySelector("#summaryBox button");
+
+  if(score >= 0.7){
+  
+  winSound.play();
+    nextBtn.style.display = "inline-block";
+  }else{
+  nextBtn.style.display = "none";
+  }
+
+  // ซ่อนฉากต่อสู้
+  document.getElementById("uiBox").style.display = "none";
+}
+
+function nextLevel(){
+  if(level < unlocked){
+    level++;
+    resetRound();
+  }else{
+    alert("🔒 ต้องผ่านด่านนี้ก่อน (ทำให้ครบ 10 ข้อและได้ ≥70%)");
+  }
+}
+function resetRound(){
+  hp = 100;
+  enemyHP = 100;   // ⭐ เพิ่ม
+  correctCount = 0;
+  totalCount = 0;
+  resultText.innerText = "";
+
+  changeEnemy(); // ⭐ สำคัญมาก
+
+  // 👾 แสดงมอนกลับมา
+let enemy = document.getElementById("enemy");
+enemy.style.display = "block";
+
+ updateUI();
+ updateEnemyHP(); // ⭐ เพิ่ม
+newQ();
+}
+
+function resetGame(){
+  level = 1;
+  unlocked = 1;
+  coins = 0;
+
+  // ซ่อนเกม
+  document.getElementById("gameBox").style.display = "none";
+
+  // กลับหน้าเริ่ม
+  document.getElementById("startScreen").style.display = "flex";
+
+  resetRound();
+}
+
+updateUI();
+
+let touchStartX = 0;
+let touchStartY = 0;
+
+document.addEventListener("touchstart", function(e){
+  touchStartX = e.touches[0].clientX;
+  touchStartY = e.touches[0].clientY;
+});
+
+document.addEventListener("touchmove", function(e){
+
+  let touchX = e.touches[0].clientX;
+  let touchY = e.touches[0].clientY;
+
+  let dx = touchX - touchStartX;
+  let dy = touchY - touchStartY;
+
+  let speed = 0.2;
+
+  playerX += dx * speed;
+  playerY += dy * speed;
+
+  let player = document.getElementById("playerMap");
+
+  if(dx > 0){
+    player.style.transform = "scaleX(1)";
+  }else if(dx < 0){
+    player.style.transform = "scaleX(-1)";
+  }
+
+  player.style.left = playerX + "px";
+  player.style.top = playerY + "px";
+
+  let monsters = document.querySelectorAll(".monster");
+
+  monsters.forEach(monster => {
+
+    let pRect = player.getBoundingClientRect();
+    let mRect = monster.getBoundingClientRect();
+
+    if(
+      pRect.left < mRect.right &&
+      pRect.right > mRect.left &&
+      pRect.top < mRect.bottom &&
+      pRect.bottom > mRect.top
+    ){
+      enterBattle();
+      monster.style.display = "none";
+    }
+
+  });
+
+  touchStartX = touchX;
+  touchStartY = touchY;
+
+});
+
+document.addEventListener("keydown", function(e){
+
+// ✅ กันเฉพาะปุ่มลูกศร
+  if(["ArrowUp","ArrowDown","ArrowLeft","ArrowRight"].includes(e.key)){
+    e.preventDefault();
+  }
+
+let player = document.getElementById("playerMap");
+
+if(walkSound.paused){
+  walkSound.play();
+}
+
+if(e.key === "ArrowRight"){
+  playerX += 10;
+  player.style.transform = "scaleX(1)";
+}
+if(e.key === "ArrowLeft"){
+  playerX -= 10;
+  player.style.transform = "scaleX(-1)";
+}
+if(e.key === "ArrowUp") playerY -= 10;
+if(e.key === "ArrowDown") playerY += 10;
+
+  let monsters = document.querySelectorAll(".monster");
+
+monsters.forEach(monster => {
+
+  let pRect = player.getBoundingClientRect();
+  let mRect = monster.getBoundingClientRect();
+
+  if(
+    pRect.left < mRect.right &&
+    pRect.right > mRect.left &&
+    pRect.top < mRect.bottom &&
+    pRect.bottom > mRect.top
+  ){
+    enterBattle();
+
+    monster.style.display = "none"; // ⭐ ฆ่าตัวนี้ตัวเดียว
+
+    playerX = 100;
+    playerY = 300;
+
+    player.style.left = playerX + "px";
+    player.style.top = playerY + "px";
+	player.style.transform = "scale(1.2)";
+	monster.style.transform = "scale(1.3)";
+  }
+
+});
+
+// ⭐ ต้องมีบรรทัดนี้
+
+  player.style.left = playerX + "px";
+  player.style.top = playerY + "px";
+  
+  player.style.transform = "scale(1.1)";
+  setTimeout(()=>{
+    player.style.transform = "scale(1)";
+  },100);
+
+}); //
+ 
+function enterBattle(){
+
+  // ❌ ซ่อนแผนที่
+  document.getElementById("mapArea").style.display = "none";
+
+  // ✅ โชว์ฉากต่อสู้
+  document.getElementById("uiBox").style.display = "block";
+
+  // 💥 เอฟเฟกต์ตอนเข้าไฟต์
+  let box = document.getElementById("gameBox");
+
+  box.style.transform = "scale(1.3) rotate(2deg)";
+  setTimeout(()=>{
+    box.style.transform = "scale(1) rotate(0deg)";
+  },200);
+  let player = document.getElementById("player");
+  let enemy = document.getElementById("enemy");
+  
+  // ⭐ ใส่ glow
+  player.style.filter = "drop-shadow(0 0 15px cyan)";
+  enemy.style.filter = "drop-shadow(0 0 15px red)";
+
+  // 🔁 เริ่มการต่อสู้ใหม่
+  resetRound();
+}
+
+function goNextLevel(){
+  let score = correctCount / totalCount;
+
+  document.getElementById("summaryBox").style.display = "none";
+
+  if(score >= 0.7){
+    if(level < 5){
+
+      unlocked = Math.max(unlocked, level + 1);
+
+      level++;
+
+      // ⭐ ไปหน้า map แทน
+      updateMapMonster();
+
+      document.getElementById("uiBox").style.display = "none";
+      document.getElementById("mapArea").style.display = "block";
+
+      // รีเซ็ตตำแหน่งผู้เล่น
+      playerX = 100;
+      playerY = 300;
+
+      let player = document.getElementById("playerMap");
+      player.style.left = playerX + "px";
+      player.style.top = playerY + "px";
+
+    }else{
+      alert("🏆 จบเกม!");
+      document.getElementById("gameBox").style.display = "none";
+      document.getElementById("startScreen").style.display = "flex";
+    }
+
+  }else{
+    alert("❌ ไม่ผ่าน เริ่มใหม่!");
+    resetGame();
+  }
+}
+
+function restartGame(){
+
+  // ปิดหน้าสรุป
+  document.getElementById("summaryBox").style.display = "none";
+
+  // รีเซ็ตเกมทั้งหมด
+  resetGame();
+
+  // กลับไปหน้าเริ่มต้น
+  document.getElementById("gameBox").style.display = "none";
+  document.getElementById("startScreen").style.display = "flex";
+  document.getElementById("player").style.filter = "drop-shadow(0 0 10px black)";
+  document.getElementById("enemy").style.filter = "drop-shadow(0 0 10px black)";
+  
+}
+
+function move(dir){
+  if(dir === "right") playerX += 20;
+  if(dir === "left") playerX -= 20;
+  if(dir === "up") playerY -= 20;
+  if(dir === "down") playerY += 20;
+
+  let player = document.getElementById("playerMap");
+  player.style.left = playerX + "px";
+  player.style.top = playerY + "px";
+}
+
+</script>
+
+</body>
+</html>
