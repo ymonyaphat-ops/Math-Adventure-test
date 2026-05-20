@@ -438,22 +438,9 @@ body {
   overflow: hidden;
 }
 
-#mobileControls{
-  position:fixed;
-  bottom:10px;
-  left:50%;
-  transform:translateX(-50%);
-
-  z-index:10;
-
-  display:none;
-  flex-direction:column;
-  gap:5px;
-}
-
 /* 📱 แสดงเฉพาะมือถือ และเฉพาะหน้า map */
 .mobile-mode #mobileControls{
-  display:flex;
+  display:flex !important;
 }
 
 .coin{
@@ -992,61 +979,6 @@ function resetGame(){
 
 updateUI();
 
-let touchStartX = 0;
-let touchStartY = 0;
-
-document.addEventListener("touchstart", function(e){
-  touchStartX = e.touches[0].clientX;
-  touchStartY = e.touches[0].clientY;
-});
-
-document.addEventListener("touchmove", function(e){
-
-  let touchX = e.touches[0].clientX;
-  let touchY = e.touches[0].clientY;
-
-  let dx = touchX - touchStartX;
-  let dy = touchY - touchStartY;
-
-  let speed = 0.2;
-
-  playerX += dx * speed;
-  playerY += dy * speed;
-
-  let player = document.getElementById("playerMap");
-
-  if(dx > 0){
-    player.style.transform = "scaleX(1)";
-  }else if(dx < 0){
-    player.style.transform = "scaleX(-1)";
-  }
-
-  player.style.left = playerX + "px";
-  player.style.top = playerY + "px";
-
-  let monsters = document.querySelectorAll(".monster");
-
-  monsters.forEach(monster => {
-
-    let pRect = player.getBoundingClientRect();
-    let mRect = monster.getBoundingClientRect();
-
-    if(
-      pRect.left < mRect.right &&
-      pRect.right > mRect.left &&
-      pRect.top < mRect.bottom &&
-      pRect.bottom > mRect.top
-    ){
-      enterBattle();
-      monster.style.display = "none";
-    }
-
-  });
-
-  touchStartX = touchX;
-  touchStartY = touchY;
-
-});
 
 document.addEventListener("keydown", function(e){
 
