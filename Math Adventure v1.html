@@ -434,7 +434,6 @@ button.choice:hover {
 }
 
 body {
-  touch-action: none;
   overflow: hidden;
 }
 
@@ -474,10 +473,6 @@ body {
   button.choice{
     font-size:16px;
     padding:12px;
-  }
-
-  #mobileControls{
-    display:flex;
   }
 
 }
@@ -597,14 +592,17 @@ body {
 </div>
 
 <div id="mobileControls">
+
   <div class="row">
-    <button onclick="move('up')">⬆️</button>
+    <button id="upBtn">⬆️</button>
   </div>
+
   <div class="row">
-    <button onclick="move('left')">⬅️</button>
-    <button onclick="move('down')">⬇️</button>
-    <button onclick="move('right')">➡️</button>
+    <button id="leftBtn">⬅️</button>
+    <button id="downBtn">⬇️</button>
+    <button id="rightBtn">➡️</button>
   </div>
+
 </div>
 
 </div>
@@ -1182,6 +1180,40 @@ if(window.innerWidth <= 768){
   document.body.classList.add("mobile-mode");
 }
 
+let moveInterval;
+
+function startMove(dir){
+
+  move(dir);
+
+  moveInterval = setInterval(()=>{
+    move(dir);
+  }, 100);
+
+}
+
+function stopMove(){
+  clearInterval(moveInterval);
+}
+
+const buttons = {
+  upBtn: "up",
+  downBtn: "down",
+  leftBtn: "left",
+  rightBtn: "right"
+};
+
+for(let id in buttons){
+
+  let btn = document.getElementById(id);
+
+  btn.addEventListener("touchstart", ()=>{
+    startMove(buttons[id]);
+  });
+
+  btn.addEventListener("touchend", stopMove);
+
+}
 
 </script>
 
