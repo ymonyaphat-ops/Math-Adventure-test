@@ -334,10 +334,8 @@ button.choice:hover {
   width:100%;
   height:100%;
   z-index:1;
-}
-
-#mapArea{
-  pointer-events:auto;
+  
+  pointer-events:none;
 }
 
 #playerMap,
@@ -349,6 +347,11 @@ button.choice:hover {
 
 #mobileControls{
   touch-action:none;
+}
+
+#mobileControls{
+  position:fixed;
+  z-index:999999;
 }
 
 #playerMap{
