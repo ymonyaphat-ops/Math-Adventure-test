@@ -151,12 +151,12 @@ body {
 
   display:flex;
   justify-content:center;
-  align-items:center;
+
+  align-items:flex-start; /* ⭐ แก้ตรงนี้ */
 
   padding:20px;
   box-sizing:border-box;
 
-  /* ⭐ เพิ่ม 2 ตัวนี้ */
   position: relative;
 }
 
@@ -401,49 +401,41 @@ button.choice:hover {
 
 #mobileControls{
   position:fixed;
-  bottom:20px;
+  bottom:10px;
   left:50%;
   transform:translateX(-50%);
 
   z-index:99999;
 
-  display:flex;
+  display:none;
   flex-direction:column;
-  gap:5px;
+  align-items:center;
 }
 
 #mobileControls .row{
   display:flex;
-  justify-content:center;
 }
 
 #mobileControls button{
-  width:60px;
-  height:60px;
-  margin:5px;
-  font-size:24px;
+  width:55px;
+  height:55px;
+  margin:4px;
+
   border:none;
   border-radius:12px;
+
+  font-size:22px;
+
   background:#0984e3;
   color:white;
 }
 
 #mobileControls button:active{
-  transform: scale(0.9);
-  background:#74b9ff;
+  transform:scale(0.9);
 }
 
 body {
   overflow: hidden;
-}
-
-/* 📱 แสดงเฉพาะมือถือ และเฉพาะหน้า map */
-@media(max-width:768px){
-
-  #mobileControls{
-    display:flex;
-  }
-
 }
 
 .coin{
@@ -632,9 +624,6 @@ function closeWelcome(){
 }
 
 function startGame(lv){
-
-   // 📱 แสดงปุ่มมือถือ
-  document.getElementById("mobileControls").style.display = "flex";
   
   if(window.innerWidth <= 768){
     document.getElementById("mobileControls").style.display = "flex";
@@ -657,8 +646,9 @@ function startGame(lv){
 
   document.getElementById("uiBox").style.display = "none";
   document.getElementById("mapArea").style.display = "block";
-  
+  if(window.innerWidth <= 768){
   document.getElementById("mobileControls").style.display = "flex";
+}
 
   document.getElementById("player").src = selectedChar;
   document.getElementById("playerMap").src = selectedChar;
