@@ -336,6 +336,10 @@ button.choice:hover {
   z-index:1;
 }
 
+#mapArea{
+  pointer-events:none;
+}
+
 #playerMap,
 .monster,
 #mobileControls{
@@ -646,6 +650,7 @@ function startGame(lv){
 
   document.getElementById("uiBox").style.display = "none";
   document.getElementById("mapArea").style.display = "block";
+  
   if(window.innerWidth <= 768){
   document.getElementById("mobileControls").style.display = "flex";
 }
@@ -1175,11 +1180,15 @@ for(let id in buttons){
 
   let btn = document.getElementById(id);
 
-  btn.addEventListener("touchstart", ()=>{
-    startMove(buttons[id]);
-  });
+  btn.addEventListener("touchstart", (e)=>{
+  e.preventDefault();
+  startMove(buttons[id]);
+});
 
-  btn.addEventListener("touchend", stopMove);
+  btn.addEventListener("touchend", (e)=>{
+  e.preventDefault();
+  stopMove();
+});
 
 }
 
