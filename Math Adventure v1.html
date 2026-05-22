@@ -337,7 +337,7 @@ button.choice:hover {
 }
 
 #mapArea{
-  pointer-events:none;
+  pointer-events:auto;
 }
 
 #playerMap,
@@ -345,6 +345,10 @@ button.choice:hover {
 
 #mobileControls{
   pointer-events:auto;
+}
+
+#mobileControls{
+  touch-action:none;
 }
 
 #playerMap{
@@ -463,7 +467,7 @@ body {
 
 </head>
 
-<body>
+<body ontouchstart="">
 
 <div id="startScreen" class="screen">
   <div class="centerBox">
