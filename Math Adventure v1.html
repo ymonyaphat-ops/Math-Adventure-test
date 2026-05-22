@@ -2,7 +2,7 @@
 <html>
 <head>
   <title>Math Adventure</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
 
 <style>
 .screen{
@@ -342,6 +342,7 @@ button.choice:hover {
 
 #playerMap,
 .monster,
+
 #mobileControls{
   pointer-events:auto;
 }
@@ -414,6 +415,9 @@ button.choice:hover {
   display:none;
   flex-direction:column;
   align-items:center;
+  
+  touch-action:none;
+  user-select:none;
 }
 
 #mobileControls .row{
@@ -436,6 +440,10 @@ button.choice:hover {
 
 #mobileControls button:active{
   transform:scale(0.9);
+}
+
+button{
+  touch-action: manipulation;
 }
 
 body {
@@ -1183,12 +1191,12 @@ for(let id in buttons){
   btn.addEventListener("touchstart", (e)=>{
   e.preventDefault();
   startMove(buttons[id]);
-});
+}, {passive:false});
 
-  btn.addEventListener("touchend", (e)=>{
+btn.addEventListener("touchend", (e)=>{
   e.preventDefault();
   stopMove();
-});
+}, {passive:false});
 
 }
 
