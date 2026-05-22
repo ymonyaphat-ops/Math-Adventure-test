@@ -439,7 +439,7 @@ body {
 
 /* 📱 แสดงเฉพาะมือถือ และเฉพาะหน้า map */
 .mobile-mode #mobileControls{
-  display:flex !important;
+  display:none;
 }
 
 .coin{
@@ -451,30 +451,17 @@ body {
   to{ transform: translateY(-10px); }
 }
 
-@media(max-width:768px){
+#mobileControls{
+  position:fixed;
+  bottom:20px;
+  left:50%;
+  transform:translateX(-50%);
 
-  #player{
-    width:110px;
-  }
+  z-index:99999;
 
-  #enemy{
-    width:70px;
-  }
-
- #uiBox{
-  padding:15px;
-  padding-bottom:140px;
-}
-
-  #question{
-    font-size:20px;
-  }
-
-  button.choice{
-    font-size:16px;
-    padding:12px;
-  }
-
+  display:none;
+  flex-direction:column;
+  gap:5px;
 }
 
 </style>
@@ -592,17 +579,17 @@ body {
 </div>
 
 <div id="mobileControls">
-
   <div class="row">
-    <button id="upBtn">⬆️</button>
+    <button id="upBtn" onclick="move('up')">⬆️</button>
   </div>
 
   <div class="row">
-    <button id="leftBtn">⬅️</button>
-    <button id="downBtn">⬇️</button>
-    <button id="rightBtn">➡️</button>
-  </div>
+    <button id="leftBtn" onclick="move('left')">⬅️</button>
 
+    <button id="downBtn" onclick="move('down')">⬇️</button>
+
+    <button id="rightBtn" onclick="move('right')">➡️</button>
+  </div>
 </div>
 
 </div>
