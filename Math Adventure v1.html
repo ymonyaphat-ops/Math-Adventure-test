@@ -145,6 +145,8 @@ body {
 #gameBox {
   width:100vw;
   height:100vh;
+  
+  overflow:hidden;
 
   background: url('bg.jpg') no-repeat center;
   background-size: cover;
@@ -345,14 +347,6 @@ button.choice:hover {
   pointer-events:auto;
 }
 
-#mobileControls{
-  touch-action:none;
-}
-
-#mobileControls{
-  position:fixed;
-  z-index:999999;
-}
 
 #playerMap{
   position:absolute;
@@ -413,16 +407,16 @@ button.choice:hover {
 
 #mobileControls{
   position:fixed;
-  bottom:10px;
+  bottom:20px;
   left:50%;
   transform:translateX(-50%);
 
-  z-index:99999;
+  z-index:999999;
 
   display:none;
   flex-direction:column;
   align-items:center;
-  
+
   touch-action:none;
   user-select:none;
 }
