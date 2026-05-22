@@ -438,8 +438,12 @@ body {
 }
 
 /* 📱 แสดงเฉพาะมือถือ และเฉพาะหน้า map */
-.mobile-mode #mobileControls{
-  display:none;
+@media(max-width:768px){
+
+  #mobileControls{
+    display:flex;
+  }
+
 }
 
 .coin{
@@ -449,19 +453,6 @@ body {
 @keyframes floatCoin{
   from{ transform: translateY(0px); }
   to{ transform: translateY(-10px); }
-}
-
-#mobileControls{
-  position:fixed;
-  bottom:20px;
-  left:50%;
-  transform:translateX(-50%);
-
-  z-index:99999;
-
-  display:none;
-  flex-direction:column;
-  gap:5px;
 }
 
 </style>
