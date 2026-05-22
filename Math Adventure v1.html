@@ -4,6 +4,8 @@
   <title>Math Adventure</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
 
+  <meta name="mobile-web-app-capable" content="yes">
+
 <style>
 .screen{
   width:100vw;
@@ -683,6 +685,11 @@ function startGame(lv){
   let player = document.getElementById("playerMap");
   player.style.left = playerX + "px";
   player.style.top = playerY + "px";
+  
+  setTimeout(()=>{
+  document.getElementById("mobileControls").style.display = "flex";
+},100);
+
 }
 let enemyHP = 100;
 let level = 1;
