@@ -327,8 +327,9 @@ button.choice:hover {
 
 /* 🗺️ หน้าแผนที่ */
 #mapScreen{
-  background: url('bg2.jpg') no-repeat center;
+  background: url('map.jpg') no-repeat center center;
   background-size: cover;
+  position: relative;
 }
 
 #mapArea{
@@ -337,18 +338,20 @@ button.choice:hover {
   left:0;
   width:100%;
   height:100%;
+
+  background:url("bg.jpg") no-repeat center center;
+  background-size:cover;
+
   z-index:1;
-  
-  pointer-events:none;
+
+  pointer-events:auto;
 }
 
 #playerMap,
 .monster,
-
 #mobileControls{
   pointer-events:auto;
 }
-
 
 #playerMap{
   position:absolute;
@@ -471,6 +474,69 @@ body {
 
 }
 
+.stageBtn{
+  position:absolute;
+
+  width:80px;
+  height:80px;
+
+  background:transparent !important;
+  border:none;
+  padding:0;
+  margin:0;
+
+  color:transparent;
+  font-size:0;
+
+  box-shadow:none !important;
+
+  cursor:pointer;
+  z-index:10;
+}
+
+#mapScreen button{
+  background:transparent !important;
+}
+
+.locked::after{
+  content:"🔒";
+
+  position:absolute;
+  top:20px;
+  right:25px;
+
+  font-size:30px;
+
+  text-shadow:0 0 5px black;
+}
+
+/* ตำแหน่งด่าน */
+
+#stage1{
+  left:35%;
+  top:85%;
+}
+
+#stage2{
+  left:40%;
+  top:48%;
+}
+
+#stage3{
+  left:57%;
+  top:42%;
+}
+
+#stage4{
+  left:67%;
+  top:30%;
+}
+
+#stage5{
+  left:76%;
+  top:16%;
+}
+
 </style>
 
 </head>
@@ -504,19 +570,34 @@ body {
   <button onclick="goToMap()">Next</button>
 </div>
 
-<div id="mapScreen" class="screen" style="display:none;">
-  <h2>🗺️ เลือกด่าน</h2>
-
-  <button onclick="startGame(1)">ด่าน 1</button>
-  <button onclick="startGame(2)">ด่าน 2 🔒</button>
-  <button onclick="startGame(3)">ด่าน 3 🔒</button>
-  <button onclick="startGame(4)">ด่าน 4 🔒</button>
-  <button onclick="startGame(5)">ด่าน 5 🔒</button>
-</div>
 
 <div id="welcomeBox">
   <div id="welcomeText"></div>
   <button onclick="closeWelcome()">เริ่มเกม</button>
+</div>
+
+<div id="mapScreen" class="screen" style="display:none;">
+
+  <button class="stageBtn" id="stage1"
+onclick="startGame(1)">
+</button>
+
+<button class="stageBtn locked" id="stage2"
+onclick="startGame(2)">
+</button>
+
+<button class="stageBtn locked" id="stage3"
+onclick="startGame(3)">
+</button>
+
+<button class="stageBtn locked" id="stage4"
+onclick="startGame(4)">
+</button>
+
+<button class="stageBtn locked" id="stage5"
+onclick="startGame(5)">
+</button>
+
 </div>
 
 <div id="gameBox" style="display:none;">
@@ -579,28 +660,30 @@ body {
 	<button onclick="restartGame()">🔄 เริ่มใหม่</button>
   </div>
 </div>
-    
+
 <div id="mapArea">
+
   <img id="playerMap" src="wizard.png">
-  <img id="monsterMap" class="monster" src="monster1.png" style="position:absolute;">
+
+  <img id="monsterMap"
+       class="monster"
+       src="monster1.png">
+
 </div>
 
 <div id="mobileControls">
+
   <div class="row">
-    <button id="upBtn" onclick="move('up')">⬆️</button>
+    <button id="upBtn">⬆️</button>
   </div>
 
   <div class="row">
-    <button id="leftBtn" onclick="move('left')">⬅️</button>
-
-    <button id="downBtn" onclick="move('down')">⬇️</button>
-
-    <button id="rightBtn" onclick="move('right')">➡️</button>
+    <button id="leftBtn">⬅️</button>
+    <button id="downBtn">⬇️</button>
+    <button id="rightBtn">➡️</button>
   </div>
-</div>
 
 </div>
-
 
 <script>
 let playerX = 100;
@@ -639,12 +722,29 @@ function goToMap(){
 }
 
 function closeWelcome(){
+
   document.getElementById("welcomeBox").style.display = "none";
 
-  // ✅ ค่อยซ่อนตอนนี้
-  document.getElementById("characterScreen").style.display="none";
+  document.getElementById("characterScreen").style.display = "none";
 
-  document.getElementById("mapScreen").style.display="block";
+  document.getElementById("mapScreen").style.display = "flex";
+
+}
+
+function startAdventure(lv){
+
+  level = lv;
+
+  document.getElementById("mapScreen").style.display = "none";
+
+  document.getElementById("gameBox").style.display = "block";
+
+  document.getElementById("uiBox").style.display = "none";
+
+  document.getElementById("mapArea").style.display = "block";
+
+  updateMapMonster();
+
 }
 
 function startGame(lv){
@@ -686,6 +786,8 @@ function startGame(lv){
   player.style.left = playerX + "px";
   player.style.top = playerY + "px";
   
+  player.style.transform = "";
+  
   setTimeout(()=>{
   document.getElementById("mobileControls").style.display = "flex";
 },100);
@@ -717,6 +819,10 @@ const wrongSound = new Audio("wrong.mp3");
 wrongSound.preload = "auto";
 wrongSound.volume = 1;
 
+const winSound = new Audio("win.mp3");
+winSound.preload = "auto";
+winSound.volume = 1;
+
 let levelText = document.getElementById("level");
 let coinsText = document.getElementById("coins");
 let hpFill = document.getElementById("hpFill");
@@ -729,6 +835,22 @@ const enemies = [
   "monster4.png",
   "monster5.png"
 ];
+
+function updateMapLock(){
+
+  for(let i=2;i<=5;i++){
+
+    let btn = document.getElementById("stage"+i);
+
+    if(i <= unlocked){
+      btn.classList.remove("locked");
+    }else{
+      btn.classList.add("locked");
+    }
+
+  }
+
+}
 
 function updateEnemyHP(){
   document.getElementById("enemyHPFill").style.width = enemyHP + "%";
@@ -920,7 +1042,7 @@ function endLevel(){
   // แสดงผลสรุป
   let percent = Math.floor(score * 100);
 
-document.getElementById("summaryText").innerHTML =
+  document.getElementById("summaryText").innerHTML =
   `🎯 ถูก ${correctCount}/${totalCount}<br>⭐ คะแนน ${percent}%`;
 
   document.getElementById("summaryBox").style.display = "flex";
@@ -965,9 +1087,26 @@ newQ();
 }
 
 function resetGame(){
+
+  clearInterval(moveInterval);
+
   level = 1;
   unlocked = 1;
   coins = 0;
+
+  playerX = 100;
+  playerY = 300;
+
+  let playerMap = document.getElementById("playerMap");
+
+  playerMap.style.left = playerX + "px";
+  playerMap.style.top = playerY + "px";
+  playerMap.style.transform = "scaleX(1)";
+
+  // ⭐ เพิ่มส่วนนี้
+  document.getElementById("player").style.transform = "";
+  document.getElementById("enemy").style.transform = "";
+  document.getElementById("monsterMap").style.transform = "";
 
   // ซ่อนเกม
   document.getElementById("gameBox").style.display = "none";
@@ -977,7 +1116,6 @@ function resetGame(){
 
   resetRound();
 }
-
 updateUI();
 
 
@@ -1047,6 +1185,8 @@ monsters.forEach(monster => {
  
 function enterBattle(){
 
+  clearInterval(moveInterval);
+
   document.getElementById("mobileControls").style.display = "none";
 
   // ❌ ซ่อนแผนที่
@@ -1069,6 +1209,9 @@ function enterBattle(){
   player.style.filter = "drop-shadow(0 0 15px cyan)";
   enemy.style.filter = "drop-shadow(0 0 15px red)";
 
+  playerX = 100;
+  playerY = 300;
+
   // 🔁 เริ่มการต่อสู้ใหม่
   resetRound();
 }
@@ -1082,6 +1225,8 @@ function goNextLevel(){
     if(level < 5){
 
       unlocked = Math.max(unlocked, level + 1);
+	  
+	  updateMapLock();
 
       level++;
 
@@ -1129,6 +1274,8 @@ function restartGame(){
 
 function move(dir){
 
+  console.log(playerX, playerY);
+  
   if(dir === "right"){
     playerX += 20;
   }
@@ -1146,6 +1293,18 @@ function move(dir){
   }
 
   let player = document.getElementById("playerMap");
+
+  let mapArea = document.getElementById("mapArea");
+
+playerX = Math.max(
+  0,
+  Math.min(playerX, mapArea.clientWidth - player.offsetWidth)
+);
+
+playerY = Math.max(
+  0,
+  Math.min(playerY, mapArea.clientHeight - player.offsetHeight)
+);
 
   player.style.left = playerX + "px";
   player.style.top = playerY + "px";
@@ -1192,6 +1351,7 @@ function startMove(dir){
 
 function stopMove(){
   clearInterval(moveInterval);
+  moveInterval = null;
 }
 
 const buttons = {
@@ -1205,17 +1365,29 @@ for(let id in buttons){
 
   let btn = document.getElementById(id);
 
-  btn.addEventListener("touchstart", (e)=>{
-  e.preventDefault();
-  startMove(buttons[id]);
-}, {passive:false});
+  btn.addEventListener("touchstart", ()=>{
+    startMove(buttons[id]);
+  });
 
-btn.addEventListener("touchend", (e)=>{
-  e.preventDefault();
-  stopMove();
-}, {passive:false});
+  btn.addEventListener("touchend", ()=>{
+    stopMove();
+  });
+  
+  btn.addEventListener("touchcancel", ()=>{
+    stopMove();
+  });  
+
+  btn.addEventListener("mousedown", ()=>{
+    startMove(buttons[id]);
+  });
+
+  btn.addEventListener("mouseup", ()=>{
+    stopMove();
+  });
 
 }
+
+updateMapLock();
 
 </script>
 
